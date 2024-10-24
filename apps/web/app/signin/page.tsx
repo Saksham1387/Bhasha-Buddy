@@ -1,12 +1,10 @@
 "use client";
-
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-
 import { Header } from "./header";
 import { Button } from "@/components/ui/button";
-
-import { signIn } from "next-auth/react";
+import { signIn, SignInResponse } from "next-auth/react";
+import { Loader } from "@/components/ui/loader";
 
 const SigninPage = () => {
   const router = useRouter();
@@ -14,32 +12,33 @@ const SigninPage = () => {
   const email = useRef("");
   const password = useRef("");
   const name = useRef("");
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: any) => {
+    setLoading(true);
     e.preventDefault();
-    const result = await signIn("credentials", {
+    const result: SignInResponse | undefined = await signIn("credentials", {
       username: username.current,
       email: email.current,
       password: password.current,
       name: name.current,
       redirect: false,
     });
-    //@ts-expect-error
-    if (!result.error) {
-      // Redirect to a specific page if login was successful
-      router.push("/stutter");
-    } else {
-      // Handle errors or show an error message to the user
-      //@ts-expect-error
+
+    if (result && !result.error) {
+      router.push("/diagnos");
+    } else if (result) {
       console.error(result.error);
+    } else {
+      console.error("Sign-in function returned undefined.");
     }
   };
   return (
     <>
+    
       <div>
         <Header></Header>
         <div className="flex flex-col items-center justify-center">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            {/* <Image src={"/logo.png"} alt="logo" height={100} width={100}></Image> */}
             <div className="p-10 shadow-xl rounded-xl mt-[100px] ">
               <h1 className="text-4xl text-neutral-400 font-bold text-center">
                 LogIn
@@ -141,9 +140,13 @@ const SigninPage = () => {
                 </div>
 
                 <div>
-                  <Button type="submit" className="ml-[100px]">
-                    Log In
-                  </Button>
+                  {loading ? (
+                    <Loader></Loader>
+                  ) : (
+                    <Button type="submit" className="ml-[100px]">
+                      Log In
+                    </Button>
+                  )}
                 </div>
               </form>
             </div>

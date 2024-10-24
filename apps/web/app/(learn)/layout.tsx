@@ -26,12 +26,11 @@ const MainLayout = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { data: session, status } = useSession();
   const router = useRouter();
-  // Function to toggle sidebar visibility
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-  if(status === "unauthenticated"){
-    router.push("/")
-    return
-  }
+  // if(status === "unauthenticated"){
+  //   router.push("/")
+  //   return
+  // }
   return (
     <SidebarContext.Provider value={{ isSidebarOpen, toggleSidebar }}>
       <SocketProvider>

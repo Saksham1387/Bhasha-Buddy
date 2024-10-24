@@ -1,28 +1,21 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import TimerComponent from "./timer";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store";
-import { increment, incrementCount2 } from "@/counterSlice";
-
-const SpeechToText = () => {
-  const count = useSelector((state: RootState) => state.counter.count);
-  const count2 = useSelector((state: RootState) => state.counter.count2);
-  const dispatch = useDispatch();
+const Stutter = () => {
   const [prompt, setPrompt] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [serverResponse, setServerResponse] = useState("");
   const [whisperResponse, setWhisperResponse] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-
-
+  const [former, setFormer] = useState(false);
   const handleListen = async () => {
     if (isListening) {
       //@ts-ignore
-      mediaRecorder.stop(); // This will trigger the 'onstop' event
+      mediaRecorder.stop();
       setIsListening(false);
     } else {
       // Request the browser to access the microphone
@@ -47,8 +40,10 @@ const SpeechToText = () => {
           const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
           const formData = new FormData();
           const formData2 = new FormData();
+
           formData.append("audio", audioBlob, "recording.wav");
           formData2.append("file", audioBlob, "recording1.wav");
+          console.log(formData);
 
           // Send the audio file to the server model
           try {
@@ -58,19 +53,9 @@ const SpeechToText = () => {
               body: formData,
             });
             const responseData = await response.json();
-
+            console.log(responseData.predicted_class);
             setServerResponse(responseData.predicted_class);
-            if (
-              responseData.predicted_class[0] === "blocking" ||
-              responseData.predicted_class[0] === "prolongation" ||
-              responseData.predicted_class[0] === "repetition"
-            ) {
-              dispatch(increment());
-            } else {
-              dispatch(incrementCount2());
-            }
             setPrompt(whisperResponse);
-            console.log(count);
           } catch (error) {
             console.error("Error sending audio to the server", error);
             setServerResponse("Error sending audio to the server");
@@ -79,7 +64,7 @@ const SpeechToText = () => {
           console.log(
             JSON.stringify({
               prompt: `${whisperResponse}`,
-            })
+            }),
           );
           stream.getTracks().forEach((track) => track.stop());
 
@@ -125,21 +110,16 @@ const SpeechToText = () => {
     }
   };
 
-  const handleClick = () => {
-    setImageUrl("");
-    setServerResponse("");
-    setWhisperResponse("");
-    setIsListening(false);
-  };
-
   return (
-    <div className="flex-1 flex flex-row items-center my-[15vh] gap-5 ml-[200px] mt-[30px]">
+    <div className="flex-1 flex flex-row items-center my-[15vh] gap-5 ml-[130px] mt-[100px]">
       {/* cartoon image */}
       <div className="">
         <Image src="/main-page.gif" height={150} width={150} alt="Mascot" />
       </div>
-      <div className="flex flex-col items-center gap-y-8 py-5  rounded-3xl shadow-lg  shadow-slate-200 dark:bg-slate-800 dark:shadow-gray-600">
-        <h1 className="text-4xl lg:text-3xl my-1 font-bold text-neutral-600 max-w-[480px] text-center dark:text-gray-200">
+      {/* "flex-1 flex flex-row items-center my-[15vh] border border-gray-200  rounded-3xl shadow-sm" */}
+      {/* the buttons */}
+      <div className="flex flex-col items-center gap-y-8 py-5  rounded-3xl shadow-lg  shadow-slate-200 dark:bg-slate-800">
+        <h1 className="text-4xl lg:text-3xl my-1 font-bold text-neutral-600 max-w-[480px] text-center dark:text-white">
           Click on Start to Record Your Audio
         </h1>
 
@@ -163,10 +143,6 @@ const SpeechToText = () => {
             <TimerComponent></TimerComponent>
           </div>
         ) : null}
-
-        <div className="text-xl font-bold text-neutral-400">
-          Stutter Counter: {count}
-        </div>
         {serverResponse && (
           <div>
             <p className="text-xl lg:text-3xl   font-bold text-neutral-600 max-w-[480px] text-center dark:text-white">
@@ -184,7 +160,7 @@ const SpeechToText = () => {
               <p className="text-xl lg:text-3xl  font-bold text-neutral-600 max-w-[480px] text-center dark:text-white">
                 You said:{" "}
               </p>
-              <p className="text-xl lg:text-2xl   text-neutral-600 max-w-[480px] text-center drk:text-white">
+              <p className="text-xl lg:text-2xl   text-neutral-600 max-w-[480px] text-center">
                 <p className="capitalize">{whisperResponse}</p>
               </p>
             </div>
@@ -205,6 +181,9 @@ const SpeechToText = () => {
 
         {serverResponse && (
           <div className="felx flex-row">
+            <Link href="/learn">
+              <Button variant="secondary">Start Learning</Button>
+            </Link>
             <Button
               className="m-5"
               variant="danger"
@@ -220,8 +199,39 @@ const SpeechToText = () => {
           </div>
         )}
       </div>
+
+      {/* image Generated */}
+      <div>
+        <div>
+          {whisperResponse &&
+            (imageUrl ? (
+              ""
+            ) : (
+              <div
+                role="status"
+                className="flex flex-col items-center justify-center space-y-2"
+              >
+                <Image
+                  className="ml-20"
+                  src="/laoding-animation.gif"
+                  height={100}
+                  width={100}
+                  alt="Loading animation"
+                />
+
+                <p className="text-sm text-gray-700 dark:text-gray-400 ml-20">
+                  Generating Your Image...
+                </p>
+              </div>
+            ))}
+          <div className="rounded-xl shadow-xl border-neutral-300 p-3 ml-5">
+            {imageUrl && (
+              <img src={imageUrl} alt="Generated" width={500} height={500} />
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
-
-export default SpeechToText;
+export default Stutter;

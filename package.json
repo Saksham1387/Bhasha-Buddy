@@ -23,6 +23,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "react-stackai": "^0.1.9",
     "sha.js": "^2.4.11"
   }
 }
