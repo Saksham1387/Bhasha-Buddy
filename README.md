@@ -1,3 +1,4 @@
+<img src="./public/readme-image.png" />
 # Bhasha Buddy
 
 Bhasha Buddy is a web application designed to support individuals with speech disabilities, such as stuttering and blocking. Leveraging cutting-edge deep learning models, it identifies speech impediments and recommends personalized exercises to help users improve their speaking abilities. Additionally, the platform provides contact information for local speech therapists and doctors, enabling users to seek professional consultation for further development.
@@ -49,17 +50,13 @@ The app will be available at http://localhost:3000.
 
 ### Environment Variables
 To configure the project, create a .env file in the root directory and add the following environment variables:
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-NEXT_PUBLIC_URL_WHISPER=
-NEXT_PUBLIC_URL_MODEL=
-NEXT_PUBLIC_URL_DIFFUSION=
-DATABASE_URL=
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY
+NEXT_PUBLIC_URL_WHISPER 
+NEXT_PUBLIC_URL_MODEL 
+NEXT_PUBLIC_URL_DIFFUSION
+DATABASE_URL
+```
 
 Ensure you replace these with the actual values required by the app.
-
-###Contributing
-We welcome contributions to improve Bhasha Buddy! Feel free to submit pull requests or open issues for any bugs or new features.
-
-###License
-This project is licensed under the MIT License – see the LICENSE file for details.
