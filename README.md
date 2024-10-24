@@ -32,7 +32,7 @@ Make sure you have Node.js installed. You can install it from [here](https://nod
 2. Navigate to the project directory:
    cd bhasha-buddy
 3. npm install
-# or
+ or
 yarn install
 
 4. Running the Application
