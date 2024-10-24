@@ -1,4 +1,5 @@
 <img src="./readme-image.png" />
+
 # Bhasha Buddy
 
 Bhasha Buddy is a web application designed to support individuals with speech disabilities, such as stuttering and blocking. Leveraging cutting-edge deep learning models, it identifies speech impediments and recommends personalized exercises to help users improve their speaking abilities. Additionally, the platform provides contact information for local speech therapists and doctors, enabling users to seek professional consultation for further development.
