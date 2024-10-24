@@ -38,11 +38,11 @@ yarn install
 4. Running the Application
 To start the application, run:
 npm run dev
-# or
+ or
 yarn dev
-# or
+ or
 pnpm dev
-# or
+ or
 bun dev
 
 The app will be available at http://localhost:3000.
